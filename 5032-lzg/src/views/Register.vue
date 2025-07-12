@@ -10,7 +10,7 @@
             </div>
 
             <div class="card-body p-4 p-md-5">
-              <form @submit.prevent="register">
+              <form @submit.prevent="handleRegister">
                 <div class="mb-4">
                   <label for="name" class="form-label fs-5">姓名</label>
                   <input
@@ -124,6 +124,8 @@
 </template>
 
 <script>
+import { register } from '../services/auth';
+
 export default {
   name: 'RegisterPage',
   data() {
@@ -135,16 +137,25 @@ export default {
         confirmPassword: '',
         agreeTerms: false
       }
-    }
+    };
   },
   methods: {
-    register() {
-      // 注册逻辑
-      console.log('注册信息:', this.formData)
-      this.$router.push('/dashboard')
+    async handleRegister() {
+      const { name, email, password, confirmPassword } = this.formData;
+      if (password !== confirmPassword) {
+        alert('两次输入的密码不一致');
+        return;
+      }
+      const isRegistered = await register(email, password, name);
+      if (isRegistered) {
+        alert('注册成功，请登录');
+        this.$router.push('/login');
+      } else {
+        alert('该邮箱已被注册，请使用其他邮箱');
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>

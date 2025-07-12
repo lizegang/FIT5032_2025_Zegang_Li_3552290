@@ -33,3 +33,78 @@ a,
     padding: 0 2rem;
   }
 }
+
+/* 新增样式 */
+.navbar {
+  background-color: #3498db;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-link {
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.router-link-active {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+
+.login-card,
+.register-card {
+  border-radius: 20px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-item,
+.benefit-item {
+  transition: all 0.3s;
+  height: 100%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-item:hover,
+.benefit-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  background-color: #3498db;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}

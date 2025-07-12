@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <!-- 顶部导航 -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- 根据路由判断是否显示导航 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" v-if="!isHomePage">
       <div class="container">
         <router-link to="/" class="navbar-brand">健康慈善平台</router-link>
 
@@ -35,8 +35,8 @@
       <router-view></router-view>
     </div>
 
-    <!-- 页脚 -->
-    <footer class="bg-dark text-white py-5">
+    <!-- 根据路由判断是否显示页脚 -->
+    <footer class="bg-dark text-white py-5" v-if="!isHomePage">
       <div class="container">
         <div class="row">
           <div class="col-md-4 mb-4 mb-md-0">
@@ -70,6 +70,20 @@
     </footer>
   </div>
 </template>
+
+<script>
+import { useRoute } from 'vue-router';
+
+export default {
+  setup() {
+    const route = useRoute();
+    const isHomePage = () => route.path === '/';
+    return {
+      isHomePage
+    };
+  }
+};
+</script>
 
 <style scoped>
 #app {
