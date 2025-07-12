@@ -1,47 +1,50 @@
-// src/router/index.js
-import { createRouter, createWebHistory } from 'vue-router';
-
-import Home from '../views/Home.vue';
-import Dashboard from '../views/Dashboard.vue';
-import AdminPanel from '../views/AdminPanel.vue';
-import Login from '../components/Auth/Login.vue';
-import Register from '../components/Auth/Register.vue';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/register', name: 'Register', component: Register },
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('@/views/Home.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/Login.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/Register.vue')
+  },
+  {
+    path: '/admin-login',
+    name: 'AdminLogin',
+    component: () => import('@/views/AdminLogin.vue')
+  },
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true },
+    component: () => import('@/views/Dashboard.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/admin',
-    name: 'AdminPanel',
-    component: AdminPanel,
-    meta: { requiresAuth: true, adminOnly: true },
+    name: 'Admin',
+    component: () => import('@/views/AdminPanel.vue'),
+    meta: { requiresAdmin: true }
   },
-];
+
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
-// ✅ 延迟加载 authStore（避免 Pinia 未激活）
-router.beforeEach(async (to, from, next) => {
-  const { useAuthStore } = await import('../store/authStore');
-  const auth = useAuthStore();
+// 路由守卫示例
+router.beforeEach((to, from, next) => {
+  // 这里可以添加认证检查逻辑
+  next()
+})
 
-  if (to.meta.requiresAuth && !auth.isLoggedIn) {
-    next('/login');
-  } else if (to.meta.adminOnly && auth.user?.role !== 'admin') {
-    next('/');
-  } else {
-    next();
-  }
-});
-
-export default router;
+export default router
