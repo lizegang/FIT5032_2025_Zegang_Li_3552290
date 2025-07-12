@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Healthy Eating Guide",
+    "category": "Nutrition",
+    "content": "As we age, it's important to pay attention to the nutrients we consume. Aim for a diet rich in protein, fiber, and vitamins, while avoiding high-sugar, high-salt, and high-fat foods.",
+    "author": "Health Experts Team",
+    "date": "2023-09-25"
+  },
+  {
+    "id": 2,
+    "title": "Exercises to Prevent Falls",
+    "category": "Exercise",
+    "content": "Seniors can reduce the risk of falling through simple balance exercises such as single-leg standing, tai chi, and leg-strengthening routines.",
+    "author": "Physiotherapy Team",
+    "date": "2023-09-28"
+  },
+  {
+    "id": 3,
+    "title": "Mental Health and Social Engagement",
+    "category": "Psychology",
+    "content": "Loneliness and depression can significantly impact the well-being of older adults. Participating in community events, staying connected with family and friends, and joining interest groups are great ways to support mental health.",
+    "author": "Counseling Team",
+    "date": "2023-10-01"
+  }
+]
