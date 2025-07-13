@@ -1,73 +1,92 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="home-container">
-    <div class="hero-banner">
-      <h1 class="display-4">欢迎来到澳大利亚健康慈善服务平台</h1>
-      <p class="lead">我们致力于提升老年人的健康、独立性与生活质量。</p>
-      <div class="divider"></div>
+  <div class="container py-5">
+    <div class="hero-section text-center mb-5">
+      <h1 class="display-4 fw-bold">健康慈善平台</h1>
+      <p class="lead text-muted mb-4">连接爱心，共享健康</p>
+      <div class="d-flex justify-content-center gap-3">
+        <router-link to="/register" class="btn btn-primary btn-lg">
+          立即加入
+        </router-link>
+        <router-link to="/events" class="btn btn-outline-secondary btn-lg">
+          浏览活动
+        </router-link>
+      </div>
     </div>
 
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="icon-container mb-3">
+              <i class="fas fa-heartbeat text-primary fa-3x"></i>
+            </div>
+            <h3 class="card-title">健康活动</h3>
+            <p class="card-text">参与各类健康讲座、义诊活动，获取专业医疗建议。</p>
+          </div>
+        </div>
+      </div>
 
-    <div class="actions">
-      <!-- 未登录用户显示登录和注册按钮 -->
-      <router-link to="/login" class="btn btn-primary btn-lg" v-if="!isAuthenticated">
-        <i class="fas fa-user-circle mr-2"></i>用户登录
-      </router-link>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="icon-container mb-3">
+              <i class="fas fa-hands-helping text-success fa-3x"></i>
+            </div>
+            <h3 class="card-title">慈善捐助</h3>
+            <p class="card-text">为有需要的人群提供帮助，共同建设健康社区。</p>
+          </div>
+        </div>
+      </div>
 
-      <router-link to="/register" class="btn btn-secondary btn-lg" v-if="!isAuthenticated">
-        <i class="fas fa-user-plus mr-2"></i>用户注册
-      </router-link>
-
-      <!-- 无论是否登录，只要不是管理员都显示管理员登录按钮 -->
-      <router-link to="/admin-login" class="btn btn-dark btn-lg" v-if="!isAdmin">
-        <i class="fas fa-lock mr-2"></i>管理员登录
-      </router-link>
-
-      <!-- 已登录的普通用户显示仪表盘按钮 -->
-      <router-link to="/dashboard" class="btn btn-success btn-lg" v-if="isAuthenticated && !isAdmin">
-        <i class="fas fa-tachometer-alt mr-2"></i>前往仪表盘
-      </router-link>
-
-      <!-- 管理员用户显示管理面板按钮 -->
-      <router-link to="/admin" class="btn btn-warning btn-lg" v-if="isAdmin">
-        <i class="fas fa-cog mr-2"></i>前往管理面板
-      </router-link>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="icon-container mb-3">
+              <i class="fas fa-users text-info fa-3x"></i>
+            </div>
+            <h3 class="card-title">社区互动</h3>
+            <p class="card-text">与志同道合的朋友交流健康心得，分享生活经验。</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- 平台特点介绍 -->
-    <div class="features mt-5">
-      <div class="row">
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
+    <div class="mt-6">
+      <h2 class="text-center mb-4">近期活动</h2>
+      <div class="row g-4">
+        <div class="col-md-6" v-for="event in events" :key="event.id">
+          <div class="card shadow-sm">
             <div class="card-body">
-              <div class="feature-icon bg-primary text-white rounded-circle p-3 mb-3">
-                <i class="fas fa-heartbeat fa-2x"></i>
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h3 class="card-title">{{ event.title }}</h3>
+                  <div class="d-flex align-items-center mb-2">
+                    <Rating :score="getEventRating(event.id).average" :readonly="true" />
+                    <span class="ms-2 text-muted">({{ getEventRating(event.id).count }})</span>
+                  </div>
+                </div>
+                <span class="badge bg-primary">{{ event.date }}</span>
               </div>
-              <h3 class="card-title">健康资源</h3>
-              <p class="card-text">提供专业的健康咨询和资源，帮助老年人维持健康生活方式。</p>
-            </div>
-          </div>
-        </div>
+              <p class="card-text">{{ event.description.substring(0, 100) }}...</p>
 
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <div class="feature-icon bg-secondary text-white rounded-circle p-3 mb-3">
-                <i class="fas fa-users fa-2x"></i>
+              <!-- 评分组件 -->
+              <div v-if="isAuthenticated" class="mt-3">
+                <div class="d-flex align-items-center">
+                  <span class="me-2">评价活动:</span>
+                  <Rating
+                    @update="updateRating(event.id, $event)"
+                    :score="getUserReview(event.id)?.score || 0"
+                  />
+                </div>
+                <div v-if="getUserReview(event.id)" class="mt-2 text-success small">
+                  <i class="fas fa-check-circle"></i> 您已评价
+                </div>
               </div>
-              <h3 class="card-title">社区支持</h3>
-              <p class="card-text">建立互助社区，连接老年人与志愿者，减少孤独感。</p>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <div class="feature-icon bg-success text-white rounded-circle p-3 mb-3">
-                <i class="fas fa-hands-helping fa-2x"></i>
-              </div>
-              <h3 class="card-title">慈善服务</h3>
-              <p class="card-text">提供免费或低成本的健康服务，确保每个人都能获得适当照顾。</p>
+              <router-link to={’/event/${event.id}‘} class="btn btn-outline-primary mt-3">
+                查看详情
+              </router-link>
             </div>
           </div>
         </div>
@@ -77,96 +96,65 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/store/authStore';
+import { useReviewStore } from '@/store/reviewStore';
+import Rating from '@/components/Rating.vue';
 
 export default {
-  name: 'HomePage',
-  computed: {
-    isAuthenticated() {
-      const authStore = useAuthStore();
-      return authStore.isLoggedIn;
-    },
-    isAdmin() {
-      const authStore = useAuthStore();
-      return authStore.userRole === 'admin';
-    },
-    authStore() {
-      return useAuthStore();
-    }
-  },
-  created() {
-    // 页面加载时可以添加一些初始化逻辑
-    console.log('Home page initialized');
+  components: { Rating },
+  setup() {
+    const authStore = useAuthStore();
+    const reviewStore = useReviewStore();
+
+    const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+    const events = computed(() => [
+      {
+        id: 'event-1',
+        title: '健康讲座：预防心血管疾病',
+        date: '2023-06-15',
+        description: '本次讲座将由心血管专家张教授主讲，内容包括心血管疾病的预防、早期症状识别以及健康生活方式建议。适合各年龄段人群参加。'
+      },
+      {
+        id: 'event-2',
+        title: '社区义诊活动',
+        date: '2023-06-20',
+        description: '由市立医院组织的义诊活动，提供免费血压、血糖检测，以及内科、外科、眼科等基本检查。欢迎居民前来参加。'
+      }
+    ]);
+
+    const getEventRating = (eventId) => {
+      return reviewStore.getEventRating(eventId);
+    };
+
+    const getUserReview = (eventId) => {
+      if (!isAuthenticated.value) return null;
+      return reviewStore.getUserReview(eventId, authStore.user?.email || '');
+    };
+
+    const updateRating = (eventId, score) => {
+      if (!isAuthenticated.value) {
+        alert('请先登录再评价');
+        return;
+      }
+
+      reviewStore.addReview(
+        eventId,
+        authStore.user.email,
+        score,
+        '' // 简化版本，不带评论
+      );
+    };
+
+    return {
+      events,
+      getEventRating,
+      getUserReview,
+      updateRating,
+      isAuthenticated
+    };
   }
 };
 </script>
-
-<style scoped>
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.hero-banner {
-  margin-bottom: 40px;
-}
-
-.display-4 {
-  font-weight: 300;
-  margin-bottom: 20px;
-}
-
-.lead {
-  font-size: 1.25rem;
-  margin-bottom: 30px;
-}
-
-.divider {
-  width: 100px;
-  height: 3px;
-  background-color: #007bff;
-  margin: 0 auto 40px;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 60px;
-}
-
-.btn {
-  min-width: 200px;
-  padding: 12px 20px;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.debug-info {
-  text-align: left;
-  border: 1px solid #ddd;
-}
-
-.features .card {
-  border: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.features .card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  transform: translateY(-5px);
-}
-
-.feature-icon {
-  display: inline-block;
-}
-</style>

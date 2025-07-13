@@ -1,85 +1,122 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="login-page">
-    <!-- 页面布局 -->
-    <form @submit.prevent="handleLogin">
-      <!-- 电子邮箱输入框 -->
-      <div class="mb-4">
-        <label for="email" class="form-label fs-5">电子邮箱</label>
-        <input
-          type="email"
-          class="form-control form-control-lg py-3"
-          id="email"
-          v-model="formData.email"
-          placeholder="请输入您的邮箱地址"
-          required
-        >
-        <div v-if="!formData.email && submitted" class="text-danger">邮箱不能为空</div>
-        <div v-if="formData.email && !isValidEmail(formData.email) && submitted" class="text-danger">请输入有效的邮箱地址</div>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow-lg">
+          <div class="card-header bg-primary text-white text-center">
+            <h3>用户登录</h3>
+          </div>
+          <div class="card-body">
+            <form @submit.prevent="handleLogin">
+              <div class="mb-3">
+                <label for="email" class="form-label">电子邮箱</label>
+                <input
+                  type="email"
+                  id="email"
+                  v-model="form.email"
+                  class="form-control"
+                  placeholder="请输入您的邮箱"
+                  required
+                  name="email"
+                >
+                <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">密码</label>
+                <input
+                  type="password"
+                  id="password"
+                  v-model="form.password"
+                  class="form-control"
+                  placeholder="请输入您的密码"
+                  required
+                  name="password"
+                >
+                <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary w-100"
+                :disabled="loading"
+              >
+                {{ loading ? '登录中...' : '登录' }}
+              </button>
+
+              <!-- 其余代码保持不变 -->
+            </form>
+          </div>
+        </div>
       </div>
-      <!-- 密码输入框 -->
-      <div class="mb-4">
-        <label for="password" class="form-label fs-5">密码</label>
-        <input
-          type="password"
-          class="form-control form-control-lg py-3"
-          id="password"
-          v-model="formData.password"
-          placeholder="请输入您的密码"
-          minlength="6"
-          required
-        >
-        <div v-if="!formData.password && submitted" class="text-danger">密码不能为空</div>
-        <div v-if="formData.password && formData.password.length < 6 && submitted" class="text-danger">密码长度不能少于6位</div>
-      </div>
-      <!-- 登录按钮 -->
-      <div class="d-grid mb-4">
-        <button type="submit" class="btn btn-primary btn-lg py-3 fs-5">
-          <i class="fas fa-sign-in-alt me-2"></i>登录
-        </button>
-      </div>
-      <!-- 注册和管理员登录提示 -->
-      <div class="text-center">
-        <p class="mb-2">
-          <router-link to="/register" class="text-decoration-none fs-5">
-            没有账户？立即注册
-          </router-link>
-        </p>
-        <p class="mb-0">
-          <router-link to="/admin-login" class="text-decoration-none fs-5">
-            管理员登录
-          </router-link>
-        </p>
-      </div>
-    </form>
-    <!-- 登录信息展示 -->
+    </div>
   </div>
 </template>
-
 <script>
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/store/authStore';
+
 export default {
-  name: 'LoginPage',
-  data() {
-    return {
-      formData: {
-        email: '',
-        password: ''
-      },
-      submitted: false
-    };
-  },
-  methods: {
-    isValidEmail(email) {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(email);
-    },
-    handleLogin() {
-      this.submitted = true;
-      if (this.isValidEmail(this.formData.email) && this.formData.password.length >= 6) {
-        // 登录逻辑
-        console.log('登录信息:', this.formData);
-        this.$router.push('/dashboard');
+  setup() {
+    const authStore = useAuthStore();
+    const form = ref({
+      email: '',
+      password: ''
+    });
+    const errors = ref({});
+    const error = ref('');
+    const loading = ref(false);
+
+    const validateForm = () => {
+      const newErrors = {};
+
+      if (!form.value.email) {
+        newErrors.email = '邮箱不能为空';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+        newErrors.email = '请输入有效的邮箱地址';
       }
-    }
+
+      if (!form.value.password) {
+        newErrors.password = '密码不能为空';
+      } else if (form.value.password.length < 6) {
+        newErrors.password = '密码长度至少为6位';
+      }
+
+      errors.value = newErrors;
+      return Object.keys(newErrors).length === 0;
+    };
+
+    const handleLogin = async () => {
+      if (!validateForm()) return;
+
+      loading.value = true;
+      error.value = '';
+
+      const success = await authStore.login(form.value.email, form.value.password);
+
+      if (success) {
+        // 登录成功，重定向到仪表盘
+        window.location.href = '/dashboard';
+      } else {
+        error.value = authStore.error || '登录失败，请重试';
+      }
+
+      loading.value = false;
+    };
+
+    onMounted(() => {
+      // 清除之前的错误
+      authStore.error = null;
+    });
+
+    return {
+      form,
+      errors,
+      error,
+      loading,
+      handleLogin
+    };
   }
 };
 </script>

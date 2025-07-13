@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore } from '../store/authStore';
 
 export default {
   name: 'AdminLoginPage',
@@ -69,21 +69,21 @@ export default {
         email: '',
         password: ''
       }
-    }
+    };
   },
   methods: {
     login() {
-      const authStore = useAuthStore()
+      const authStore = useAuthStore();
       if (authStore.login(this.formData.email, this.formData.password)) {
         // 登录成功，重定向到管理面板
-        this.$router.push('/admin')
+        this.$router.push('/admin');
       } else {
         // 登录失败，显示错误信息
-        alert('用户名或密码错误')
+        alert('用户名或密码错误');
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { register } from '../services/auth';
+import { useAuthStore } from '../store/authStore';
 
 export default {
   name: 'RegisterPage',
@@ -146,7 +146,8 @@ export default {
         alert('两次输入的密码不一致');
         return;
       }
-      const isRegistered = await register(email, password, name);
+      const authStore = useAuthStore();
+      const isRegistered = await authStore.register(email, password, { name });
       if (isRegistered) {
         alert('注册成功，请登录');
         this.$router.push('/login');
