@@ -3,28 +3,26 @@ export const readUsers = () => {
     const data = localStorage.getItem('users');
     return data ? JSON.parse(data) : {};
   } catch (error) {
-    console.error('读取用户数据失败:', error);
+    console.error('Failed to read user data:', error);
     return {};
   }
 };
 
-// 将用户数据写入localStorage
 export const writeUsers = (users) => {
   try {
     localStorage.setItem('users', JSON.stringify(users));
     return true;
   } catch (error) {
-    console.error('写入用户数据失败:', error);
+    console.error('Failed to write user data:', error);
     return false;
   }
 };
 
-// 注册新用户
 export const registerUser = (email, password, name) => {
   const users = readUsers();
 
   if (users[email]) {
-    return { success: false, message: '邮箱已被注册' };
+    return { success: false, message: 'Email already registered' };
   }
 
   users[email] = {
@@ -36,17 +34,16 @@ export const registerUser = (email, password, name) => {
 
   const result = writeUsers(users);
   return result
-    ? { success: true, message: '注册成功' }
-    : { success: false, message: '注册失败，请重试' };
+    ? { success: true, message: 'Registration successful' }
+    : { success: false, message: 'Registration failed, please try again' };
 };
 
-// 用户登录
 export const loginUser = (email, password) => {
   const users = readUsers();
   const user = users[email];
 
   if (!user || user.password !== password) {
-    return { success: false, message: '用户名或密码错误' };
+    return { success: false, message: 'Incorrect email or password' };
   }
 
   return {

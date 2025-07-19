@@ -8,7 +8,7 @@ export default {
 
     const totalItems = computed(() => items.value.length)
 
-    const lastUpdated = ref('从未更新')
+    const lastUpdated = ref('Never updated')
 
     const addItem = () => {
       if (newItem.value.trim()) {
@@ -34,7 +34,7 @@ export default {
     }
 
     const clearAll = () => {
-      if (confirm('确定要清除所有项目吗？')) {
+      if (confirm('Are you sure you want to clear all items?')) {
         items.value = []
         lastUpdated.value = new Date().toLocaleString()
       }
@@ -64,7 +64,7 @@ export default {
         <div class="col-lg-8">
           <div class="card shadow-lg mb-4">
             <div class="card-header bg-primary text-white">
-              <h2 class="mb-0">响应式 localStorage 演示</h2>
+              <h2 class="mb-0">Responsive localStorage Demo</h2>
             </div>
             <div class="card-body">
               <div class="input-group mb-4">
@@ -72,21 +72,21 @@ export default {
                   type="text"
                   class="form-control form-control-lg"
                   v-model="newItem"
-                  placeholder="输入待办事项..."
+                  placeholder="Enter a to-do item..."
                   @keyup.enter="addItem"
                 >
                 <button class="btn btn-primary btn-lg" @click="addItem">
-                  <i class="fas fa-plus me-2"></i>添加
+                  <i class="fas fa-plus me-2"></i>Add
                 </button>
               </div>
 
               <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="stats">
-                  <span class="badge bg-info me-2">总项目数: {{ totalItems }}</span>
-                  <span class="badge bg-secondary">最后更新: {{ lastUpdated }}</span>
+                  <span class="badge bg-info me-2">Total Items: {{ totalItems }}</span>
+                  <span class="badge bg-secondary">Last Updated: {{ lastUpdated }}</span>
                 </div>
                 <button class="btn btn-danger btn-sm" @click="clearAll">
-                  <i class="fas fa-trash me-1"></i>清除全部
+                  <i class="fas fa-trash me-1"></i>Clear All
                 </button>
               </div>
 
@@ -114,8 +114,8 @@ export default {
 
                 <div v-if="items.length === 0" class="text-center py-4 text-muted">
                   <i class="fas fa-clipboard-list fa-3x mb-3"></i>
-                  <h5>没有待办事项</h5>
-                  <p>请添加您的第一个项目</p>
+                  <h5>No to-do items</h5>
+                  <p>Please add your first item</p>
                 </div>
               </div>
             </div>
@@ -123,29 +123,29 @@ export default {
 
           <div class="card shadow-lg">
             <div class="card-header bg-info text-white">
-              <h3 class="mb-0">实现原理</h3>
+              <h3 class="mb-0">Implementation Principle</h3>
             </div>
             <div class="card-body">
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                   <i class="fas fa-check-circle text-success me-2"></i>
-                  使用 <code>useStorage</code> 自定义 hook 创建响应式 localStorage 引用
+                  Use the <code>useStorage</code> custom hook to create a responsive localStorage reference
                 </li>
                 <li class="list-group-item">
                   <i class="fas fa-check-circle text-success me-2"></i>
-                  Vue 的 <code>watch</code> 函数监听数据变化并自动同步到 localStorage
+                  Vue's <code>watch</code> function monitors data changes and automatically synchronizes them to localStorage
                 </li>
                 <li class="list-group-item">
                   <i class="fas fa-check-circle text-success me-2"></i>
-                  组件加载时从 localStorage 初始化数据
+                  Initialize data from localStorage when the component is loaded
                 </li>
                 <li class="list-group-item">
                   <i class="fas fa-check-circle text-success me-2"></i>
-                  所有操作自动更新 localStorage 和 UI
+                  All operations automatically update localStorage and the UI
                 </li>
                 <li class="list-group-item">
                   <i class="fas fa-check-circle text-success me-2"></i>
-                  响应式设计确保在不同设备上完美显示
+                  Responsive design ensures perfect display on different devices
                 </li>
               </ul>
             </div>

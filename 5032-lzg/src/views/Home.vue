@@ -2,14 +2,14 @@
 <template>
   <div class="container py-5">
     <div class="hero-section text-center mb-5">
-      <h1 class="display-4 fw-bold">健康慈善平台</h1>
-      <p class="lead text-muted mb-4">连接爱心，共享健康</p>
+      <h1 class="display-4 fw-bold">Health Charity Platform</h1>
+      <p class="lead text-muted mb-4">Connect Love, Share Health</p>
       <div class="d-flex justify-content-center gap-3">
         <router-link to="/register" class="btn btn-primary btn-lg">
-          立即加入
+          Join Now
         </router-link>
         <router-link to="/events" class="btn btn-outline-secondary btn-lg">
-          浏览活动
+          Browse Events
         </router-link>
       </div>
     </div>
@@ -21,8 +21,8 @@
             <div class="icon-container mb-3">
               <i class="fas fa-heartbeat text-primary fa-3x"></i>
             </div>
-            <h3 class="card-title">健康活动</h3>
-            <p class="card-text">参与各类健康讲座、义诊活动，获取专业医疗建议。</p>
+            <h3 class="card-title">Health Activities</h3>
+            <p class="card-text">Participate in various health lectures and free medical check-ups to get professional medical advice.</p>
           </div>
         </div>
       </div>
@@ -33,8 +33,8 @@
             <div class="icon-container mb-3">
               <i class="fas fa-hands-helping text-success fa-3x"></i>
             </div>
-            <h3 class="card-title">慈善捐助</h3>
-            <p class="card-text">为有需要的人群提供帮助，共同建设健康社区。</p>
+            <h3 class="card-title">Charitable Donations</h3>
+            <p class="card-text">Provide assistance to those in need and build a healthy community together.</p>
           </div>
         </div>
       </div>
@@ -45,15 +45,15 @@
             <div class="icon-container mb-3">
               <i class="fas fa-users text-info fa-3x"></i>
             </div>
-            <h3 class="card-title">社区互动</h3>
-            <p class="card-text">与志同道合的朋友交流健康心得，分享生活经验。</p>
+            <h3 class="card-title">Community Interaction</h3>
+            <p class="card-text">Exchange health experiences and share life stories with like-minded friends.</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="mt-6">
-      <h2 class="text-center mb-4">近期活动</h2>
+      <h2 class="text-center mb-4">Recent Events</h2>
       <div class="row g-4">
         <div class="col-md-6" v-for="event in events" :key="event.id">
           <div class="card shadow-sm">
@@ -66,26 +66,25 @@
                     <span class="ms-2 text-muted">({{ getEventRating(event.id).count }})</span>
                   </div>
                 </div>
-                <span class="badge bg-primary">{{ event.date }}</span>
+                <span class="badge bg-primary">{{ formatDate(event.date) }}</span>
               </div>
               <p class="card-text">{{ event.description.substring(0, 100) }}...</p>
 
-              <!-- 评分组件 -->
               <div v-if="isAuthenticated" class="mt-3">
                 <div class="d-flex align-items-center">
-                  <span class="me-2">评价活动:</span>
+                  <span class="me-2">Rate this event:</span>
                   <Rating
                     @update="updateRating(event.id, $event)"
                     :score="getUserReview(event.id)?.score || 0"
                   />
                 </div>
                 <div v-if="getUserReview(event.id)" class="mt-2 text-success small">
-                  <i class="fas fa-check-circle"></i> 您已评价
+                  <i class="fas fa-check-circle"></i> You have rated this event
                 </div>
               </div>
 
-              <router-link to={’/event/${event.id}‘} class="btn btn-outline-primary mt-3">
-                查看详情
+              <router-link :to="`/event/${event.id}`" class="btn btn-outline-primary mt-3">
+                View Details
               </router-link>
             </div>
           </div>
@@ -113,17 +112,22 @@ export default {
     const events = computed(() => [
       {
         id: 'event-1',
-        title: '健康讲座：预防心血管疾病',
+        title: 'Health Lecture: Preventing Cardiovascular Diseases',
         date: '2023-06-15',
-        description: '本次讲座将由心血管专家张教授主讲，内容包括心血管疾病的预防、早期症状识别以及健康生活方式建议。适合各年龄段人群参加。'
+        description: 'This lecture will be given by Professor Zhang, a cardiovascular expert. The content includes prevention of cardiovascular diseases, early symptom recognition, and healthy lifestyle advice. Suitable for people of all ages.'
       },
       {
         id: 'event-2',
-        title: '社区义诊活动',
+        title: 'Community Free Medical Check-up',
         date: '2023-06-20',
-        description: '由市立医院组织的义诊活动，提供免费血压、血糖检测，以及内科、外科、眼科等基本检查。欢迎居民前来参加。'
+        description: 'A free medical check-up organized by the Municipal Hospital, providing free blood pressure and blood sugar tests, as well as basic examinations in internal medicine, surgery, ophthalmology, etc. Welcome residents to participate.'
       }
     ]);
+
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+    };
 
     const getEventRating = (eventId) => {
       return reviewStore.getEventRating(eventId);
@@ -136,7 +140,7 @@ export default {
 
     const updateRating = (eventId, score) => {
       if (!isAuthenticated.value) {
-        alert('请先登录再评价');
+        alert('Please log in to rate this event');
         return;
       }
 
@@ -144,7 +148,7 @@ export default {
         eventId,
         authStore.user.email,
         score,
-        '' // 简化版本，不带评论
+        ''
       );
     };
 
@@ -153,7 +157,8 @@ export default {
       getEventRating,
       getUserReview,
       updateRating,
-      isAuthenticated
+      isAuthenticated,
+      formatDate
     };
   }
 };

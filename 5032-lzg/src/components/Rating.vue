@@ -1,4 +1,5 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+<!-- components/Rating.vue -->
 <template>
   <div class="rating">
     <span
@@ -6,10 +7,10 @@
       :key="i"
       class="rating-star"
       :class="{ 'text-warning': i <= score }"
-      @click="update(i)"
-      @mouseover="hover(i)"
-      @mouseout="hover(0)"
-      :style="{ cursor: readonly ? 'default' : 'pointer' }"
+      @click="updateRating(i)"
+      @mouseover="hoverRating(i)"
+      @mouseout="hoverRating(0)"
+      :title="`${i} Stars`"
     >
       <i class="fas fa-star"></i>
     </span>
@@ -17,7 +18,8 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
 export default {
   props: {
     score: {
@@ -33,26 +35,26 @@ export default {
   setup(props, { emit }) {
     const hoverScore = ref(0);
 
-    const getDisplayScore = () => {
+    const displayScore = computed(() => {
       return hoverScore.value > 0 ? hoverScore.value : props.score;
-    };
+    });
 
-    const update = (newScore) => {
+    const updateRating = (newScore) => {
       if (!props.readonly) {
         emit('update', newScore);
       }
     };
 
-    const hover = (score) => {
+    const hoverRating = (score) => {
       if (!props.readonly) {
         hoverScore.value = score;
       }
     };
 
     return {
-      getDisplayScore,
-      update,
-      hover
+      displayScore,
+      updateRating,
+      hoverRating
     };
   }
 };
@@ -61,10 +63,15 @@ export default {
 <style scoped>
 .rating {
   display: inline-flex;
+  font-size: 1.5rem;
 }
 
 .rating-star {
-  font-size: 1.5rem;
+  cursor: pointer;
   transition: color 0.2s;
+}
+
+.rating-star:hover {
+  transform: scale(1.1);
 }
 </style>

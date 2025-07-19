@@ -1,38 +1,35 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card shadow-lg">
           <div class="card-header bg-primary text-white text-center">
-            <h3>用户登录</h3>
+            <h3>User Login</h3>
           </div>
           <div class="card-body">
             <form @submit.prevent="handleLogin">
               <div class="mb-3">
-                <label for="email" class="form-label">电子邮箱</label>
+                <label for="email" class="form-label">Email Address</label>
                 <input
                   type="email"
                   id="email"
                   v-model="form.email"
                   class="form-control"
-                  placeholder="请输入您的邮箱"
+                  placeholder="Enter your email"
                   required
-                  name="email"
                 >
                 <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
               </div>
 
               <div class="mb-3">
-                <label for="password" class="form-label">密码</label>
+                <label for="password" class="form-label">Password</label>
                 <input
                   type="password"
                   id="password"
                   v-model="form.password"
                   class="form-control"
-                  placeholder="请输入您的密码"
+                  placeholder="Enter your password"
                   required
-                  name="password"
                 >
                 <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
               </div>
@@ -42,10 +39,16 @@
                 class="btn btn-primary w-100"
                 :disabled="loading"
               >
-                {{ loading ? '登录中...' : '登录' }}
+                {{ loading ? 'Logging in...' : 'Login' }}
               </button>
 
-              <!-- 其余代码保持不变 -->
+              <div class="mt-3 text-center">
+                Don't have an account? <router-link to="/register" class="text-primary">Register now</router-link>
+              </div>
+
+              <div v-if="error" class="mt-3 alert alert-danger text-center">
+                {{ error }}
+              </div>
             </form>
           </div>
         </div>
@@ -53,12 +56,15 @@
     </div>
   </div>
 </template>
+
 <script>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/authStore';
 
 export default {
   setup() {
+    const router = useRouter();
     const authStore = useAuthStore();
     const form = ref({
       email: '',
@@ -72,15 +78,15 @@ export default {
       const newErrors = {};
 
       if (!form.value.email) {
-        newErrors.email = '邮箱不能为空';
+        newErrors.email = 'Email is required';
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
-        newErrors.email = '请输入有效的邮箱地址';
+        newErrors.email = 'Please enter a valid email address';
       }
 
       if (!form.value.password) {
-        newErrors.password = '密码不能为空';
+        newErrors.password = 'Password is required';
       } else if (form.value.password.length < 6) {
-        newErrors.password = '密码长度至少为6位';
+        newErrors.password = 'Password must be at least 6 characters';
       }
 
       errors.value = newErrors;
@@ -96,19 +102,13 @@ export default {
       const success = await authStore.login(form.value.email, form.value.password);
 
       if (success) {
-        // 登录成功，重定向到仪表盘
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       } else {
-        error.value = authStore.error || '登录失败，请重试';
+        error.value = authStore.error || 'Login failed. Please try again';
       }
 
       loading.value = false;
     };
-
-    onMounted(() => {
-      // 清除之前的错误
-      authStore.error = null;
-    });
 
     return {
       form,
@@ -120,60 +120,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 40px 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e3e8f7 100%);
-}
-
-.login-card {
-  border-radius: 20px;
-  overflow: hidden;
-  border: none;
-}
-
-.card-header {
-  border-radius: 0 !important;
-}
-
-.form-control {
-  border: 2px solid #e0e6ed;
-  border-radius: 12px;
-  transition: all 0.3s;
-}
-
-.form-control:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
-}
-
-.btn {
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.info-item {
-  max-width: 200px;
-}
-
-@media (max-width: 768px) {
-  .login-info .d-flex {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .info-item {
-    max-width: 100%;
-  }
-}
-</style>

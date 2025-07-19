@@ -3,36 +3,36 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4">
-          <h3>健康慈善平台</h3>
-          <p>连接爱心，共享健康</p>
+          <h3>Health Charity Platform</h3>
+          <p>Connecting love, sharing health</p>
           <div class="social-links mt-3">
             <a href="#" class="text-white me-3">
               <i class="fas fa-envelope"></i>
             </a>
             <a href="#" class="text-white me-3">
-              <i class="fab fa-weixin"></i>
+              <i class="fab fa-facebook"></i>
             </a>
             <a href="#" class="text-white">
-              <i class="fab fa-weibo"></i>
+              <i class="fab fa-twitter"></i>
             </a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <h3>快速链接</h3>
+          <h3>Quick Links</h3>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-white">关于我们</a></li>
-            <li><a href="#" class="text-white">活动日历</a></li>
-            <li><a href="#" class="text-white">常见问题</a></li>
-            <li><a href="#" class="text-white">联系我们</a></li>
+            <li><a href="#" class="text-white">About Us</a></li>
+            <li><a href="#" class="text-white">Event Calendar</a></li>
+            <li><a href="#" class="text-white">FAQs</a></li>
+            <li><a href="#" class="text-white">Contact Us</a></li>
           </ul>
         </div>
 
         <div class="col-md-4">
-          <h3>联系方式</h3>
+          <h3>Contact Information</h3>
           <ul class="list-unstyled">
-            <li><i class="fas fa-map-marker-alt me-2"></i> 北京市海淀区</li>
-            <li><i class="fas fa-phone me-2"></i> 400-123-4567</li>
+            <li><i class="fas fa-map-marker-alt me-2"></i> Sydney, New South Wales, Australia</li>
+            <li><i class="fas fa-phone me-2"></i> +61 2 1234 5678</li>
             <li><i class="fas fa-envelope me-2"></i> contact@healthcharity.org</li>
           </ul>
         </div>
@@ -40,7 +40,7 @@
 
       <div class="row mt-4">
         <div class="col-md-12 text-center">
-          <p>&copy; 2023 健康慈善平台 版权所有</p>
+          <p>&copy; 2025 Health Charity Platform. All rights reserved.</p>
         </div>
       </div>
     </div>

@@ -5,32 +5,32 @@
         <div class="col-md-8 col-lg-6">
           <div class="admin-login-card card shadow-lg">
             <div class="card-header bg-primary text-white text-center py-4">
-              <h1 class="display-5 mb-1">健康慈善平台</h1>
-              <p class="mb-0">管理员登录</p>
+              <h1 class="display-5 mb-1">Health Charity Platform</h1>
+              <p class="mb-0">Admin Login</p>
             </div>
 
             <div class="card-body p-4 p-md-5">
               <form @submit.prevent="login">
                 <div class="mb-4">
-                  <label for="email" class="form-label fs-5">电子邮箱</label>
+                  <label for="email" class="form-label fs-5">Email Address</label>
                   <input
                     type="email"
                     class="form-control form-control-lg py-3"
                     id="email"
                     v-model="formData.email"
-                    placeholder="请输入您的邮箱地址"
+                    placeholder="Enter your email"
                     required
                   >
                 </div>
 
                 <div class="mb-4">
-                  <label for="password" class="form-label fs-5">密码</label>
+                  <label for="password" class="form-label fs-5">Password</label>
                   <input
                     type="password"
                     class="form-control form-control-lg py-3"
                     id="password"
                     v-model="formData.password"
-                    placeholder="请输入您的密码"
+                    placeholder="Enter your password"
                     minlength="6"
                     required
                   >
@@ -38,14 +38,14 @@
 
                 <div class="d-grid mb-4">
                   <button type="submit" class="btn btn-primary btn-lg py-3 fs-5">
-                    <i class="fas fa-sign-in-alt me-2"></i>登录
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
                   </button>
                 </div>
 
                 <div class="text-center">
                   <p class="mb-0">
                     <router-link to="/login" class="text-decoration-none fs-5">
-                      用户登录
+                      User Login
                     </router-link>
                   </p>
                 </div>
@@ -75,11 +75,9 @@ export default {
     login() {
       const authStore = useAuthStore();
       if (authStore.login(this.formData.email, this.formData.password)) {
-        // 登录成功，重定向到管理面板
         this.$router.push('/admin');
       } else {
-        // 登录失败，显示错误信息
-        alert('用户名或密码错误');
+        alert('Incorrect email or password');
       }
     }
   }

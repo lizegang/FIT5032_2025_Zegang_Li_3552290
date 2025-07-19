@@ -1,11 +1,5 @@
 import { defineStore } from 'pinia';
-
-
-// 模拟用户数据库（实际项目应使用后端API）
-const users = {
-  'admin@example.com': { password: 'admin123', role: 'admin', name: '管理员' },
-  'user@example.com': { password: 'user123', role: 'user', name: '普通用户' }
-};
+import { loginUser, registerUser } from '@/services/userService';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -17,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (state) => !!state.user,
     isAdmin: (state) => state.user?.role === 'admin',
-    userName: (state) => state.user?.name || '未登录'
+    userName: (state) => state.user?.name || 'Guest'
   },
 
   actions: {
@@ -26,17 +20,14 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
 
       try {
-        // 模拟API调用
-        await new Promise(resolve => setTimeout(resolve, 500));
+        const result = loginUser(email, password);
 
-        if (!users[email] || users[email].password !== password) {
-          throw new Error('用户名或密码错误');
+        if (!result.success) {
+          throw new Error(result.message);
         }
 
-        const user = { email, role: users[email].role, name: users[email].name };
-        this.user = user;
-        localStorage.setItem('user', JSON.stringify(user));
-
+        this.user = result.user;
+        localStorage.setItem('user', JSON.stringify(this.user));
         return true;
       } catch (error) {
         this.error = error.message;
@@ -51,21 +42,13 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
 
       try {
-        // 模拟API调用
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const result = registerUser(email, password, name);
 
-        if (users[email]) {
-          throw new Error('邮箱已被注册');
+        if (!result.success) {
+          throw new Error(result.message);
         }
 
-        // 添加新用户到模拟数据库
-        users[email] = { password, role: 'user', name };
-
-        const user = { email, role: 'user', name };
-        this.user = user;
-        localStorage.setItem('user', JSON.stringify(user));
-
-        return true;
+        return await this.login(email, password);
       } catch (error) {
         this.error = error.message;
         return false;
