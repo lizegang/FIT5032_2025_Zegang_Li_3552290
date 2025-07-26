@@ -19,14 +19,10 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-users me-2"></i>User Management
-                </a>
+                <a href="#" class="nav-link"> <i class="fas fa-users me-2"></i>User Management </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-chart-line me-2"></i>Analytics
-                </a>
+                <a href="#" class="nav-link"> <i class="fas fa-chart-line me-2"></i>Analytics </a>
               </li>
             </ul>
           </div>
@@ -64,7 +60,7 @@
                 <div class="card bg-info text-white">
                   <div class="card-body">
                     <h5 class="card-title">Average Rating</h5>
-                    <p class="card-text display-4">4.7</p>
+                    <p class="card-text display-4">{{ overallAverageRating.toFixed(2) }}</p>
                     <p class="card-text">Out of 5.0</p>
                   </div>
                 </div>
@@ -87,18 +83,64 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useAuthStore } from '@/store/authStore';
+import { computed } from 'vue'
+import { useAuthStore } from '@/store/authStore'
+import { useReviewStore } from '@/store/reviewStore'
 
 export default {
   setup() {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
+    const reviewStore = useReviewStore()
 
-    const user = computed(() => authStore.user || {});
+    const user = computed(() => authStore.user || {})
+
+    const allEvents = [
+      {
+        id: 'event-1',
+        title: 'Health Lecture: Preventing Cardiovascular Diseases',
+        date: '2023-06-15',
+        location: 'Community Activity Center',
+        description:
+          'This lecture will be given by Professor Zhang, a cardiovascular expert. The content includes prevention of cardiovascular diseases, early symptom recognition, and healthy lifestyle advice. Suitable for people of all ages.',
+        imageUrl: 'https://picsum.photos/seed/health1/400/200',
+      },
+      {
+        id: 'event-2',
+        title: 'Community Free Medical Check-up',
+        date: '2023-06-20',
+        location: 'Community Square',
+        description:
+          'A free medical check-up organized by the Municipal Hospital, providing free blood pressure and blood sugar tests, as well as basic examinations in internal medicine, surgery, ophthalmology, etc. Welcome residents to participate.',
+        imageUrl: 'https://picsum.photos/seed/health2/400/200',
+      },
+      {
+        id: 'event-3',
+        title: 'Adolescent Mental Health Lecture',
+        date: '2023-07-05',
+        location: 'City Youth Activity Center',
+        description:
+          'A special lecture on common psychological problems among adolescents (such as academic stress, social anxiety), presented by professional psychological counselors.',
+        imageUrl: 'https://picsum.photos/seed/health3/400/200',
+      },
+    ]
+
+    const overallAverageRating = computed(() => {
+      let totalScore = 0
+      let totalCount = 0
+
+      allEvents.forEach((event) => {
+        const { count, average } = reviewStore.getEventRating(event.id)
+        totalScore += average * count
+        totalCount += count
+      })
+
+      return totalCount > 0 ? totalScore / totalCount : 0
+    })
 
     return {
-      user
-    };
-  }
-};
+      user,
+      overallAverageRating,
+    }
+  },
+}
 </script>

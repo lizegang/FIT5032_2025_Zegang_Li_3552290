@@ -18,7 +18,7 @@
                   class="form-control"
                   placeholder="Enter your name"
                   required
-                >
+                />
                 <div v-if="errors.name" class="text-danger">{{ errors.name }}</div>
               </div>
 
@@ -31,7 +31,7 @@
                   class="form-control"
                   placeholder="Enter your email"
                   required
-                >
+                />
                 <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
               </div>
 
@@ -44,7 +44,7 @@
                   class="form-control"
                   placeholder="Enter password (at least 6 characters)"
                   required
-                >
+                />
                 <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
               </div>
 
@@ -57,20 +57,19 @@
                   class="form-control"
                   placeholder="Confirm your password"
                   required
-                >
-                <div v-if="errors.confirmPassword" class="text-danger">{{ errors.confirmPassword }}</div>
+                />
+                <div v-if="errors.confirmPassword" class="text-danger">
+                  {{ errors.confirmPassword }}
+                </div>
               </div>
 
-              <button
-                type="submit"
-                class="btn btn-success w-100"
-                :disabled="loading"
-              >
+              <button type="submit" class="btn btn-success w-100" :disabled="loading">
                 {{ loading ? 'Registering...' : 'Register' }}
               </button>
 
               <div class="mt-3 text-center">
-                Already have an account? <router-link to="/login" class="text-success">Login now</router-link>
+                Already have an account?
+                <router-link to="/login" class="text-success">Login now</router-link>
               </div>
 
               <div v-if="error" class="mt-3 alert alert-danger text-center">
@@ -85,80 +84,92 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useAuthStore } from '@/store/authStore';
+import { ref } from 'vue'
+import { useAuthStore } from '@/store/authStore'
+import DOMPurify from 'dompurify'
 
 export default {
   setup() {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
     const form = ref({
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
-    });
-    const errors = ref({});
-    const error = ref('');
-    const loading = ref(false);
+      confirmPassword: '',
+    })
+    const errors = ref({})
+    const error = ref('')
+    const loading = ref(false)
+
+    const sanitizeInput = (input) => {
+      return DOMPurify.sanitize(input)
+    }
 
     const validateForm = () => {
-      const newErrors = {};
+      const newErrors = {}
+
+      form.value.name = sanitizeInput(form.value.name)
+      form.value.email = sanitizeInput(form.value.email)
+      form.value.password = sanitizeInput(form.value.password)
+      form.value.confirmPassword = sanitizeInput(form.value.confirmPassword)
 
       if (!form.value.name) {
-        newErrors.name = 'Name is required';
+        newErrors.name = 'Name is required'
+      } else if (!/^[a-zA-Z\s]+$/.test(form.value.name)) {
+        newErrors.name = 'Name can only contain letters and spaces'
       }
 
       if (!form.value.email) {
-        newErrors.email = 'Email is required';
+        newErrors.email = 'Email is required'
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
-        newErrors.email = 'Please enter a valid email address';
+        newErrors.email = 'Please enter a valid email address'
       }
 
       if (!form.value.password) {
-        newErrors.password = 'Password is required';
+        newErrors.password = 'Password is required'
       } else if (form.value.password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters';
+        newErrors.password = 'Password must be at least 6 characters'
       }
 
       if (!form.value.confirmPassword) {
-        newErrors.confirmPassword = 'Please confirm your password';
+        newErrors.confirmPassword = 'Please confirm your password'
       } else if (form.value.confirmPassword !== form.value.password) {
-        newErrors.confirmPassword = 'Passwords do not match';
+        newErrors.confirmPassword = 'Passwords do not match'
       }
 
-      errors.value = newErrors;
-      return Object.keys(newErrors).length === 0;
-    };
+      errors.value = newErrors
+      return Object.keys(newErrors).length === 0
+    }
 
     const handleRegister = async () => {
-      if (!validateForm()) return;
+      if (!validateForm()) return
 
-      loading.value = true;
-      error.value = '';
+      loading.value = true
+      error.value = ''
 
       const success = await authStore.register(
         form.value.email,
         form.value.password,
-        form.value.name
-      );
+        form.value.name,
+      )
 
       if (success) {
-        alert('Registration successful! Welcome to our Health Charity Platform');
-        window.location.href = '/dashboard';
+        alert('Registration successful! Welcome to our Health Charity Platform')
+        window.location.href = '/dashboard'
       } else {
-        error.value = authStore.error || 'Registration failed. Please try again';
+        error.value = authStore.error || 'Registration failed. Please try again'
       }
 
-      loading.value = false;
-    };
+      loading.value = false
+    }
 
     return {
       form,
       errors,
       error,
       loading,
-      handleRegister
-    };
-  }
-};
+      handleRegister,
+    }
+  },
+}
 </script>
