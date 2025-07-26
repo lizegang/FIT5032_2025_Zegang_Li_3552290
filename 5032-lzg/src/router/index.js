@@ -1,68 +1,75 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import { useAuthStore } from '@/store/authStore';
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/store/authStore'
+import AdminLogin from '@/views/AdminLogin.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/Home.vue')
+    component: () => import('@/views/Home.vue'),
   },
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/Login.vue'),
-    meta: { requiresGuest: true }
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/admin-login',
+    name: 'AdminLogin',
+    component: AdminLogin,
+    meta: { requiresGuest: true },
   },
   {
     path: '/register',
     name: 'Register',
     component: () => import('@/views/Register.vue'),
-    meta: { requiresGuest: true }
+    meta: { requiresGuest: true },
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/Dashboard.vue'),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: '/admin',
     name: 'AdminDashboard',
     component: () => import('@/views/AdminDashboard.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true }
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: '/event/:id',
     name: 'Event',
-    component: () => import('@/views/Event.vue')
+    component: () => import('@/views/Event.vue'),
   },
   {
     path: '/events',
     name: 'Events',
-    component: () => import('@/views/Events.vue')
-  }
-];
+    component: () => import('@/views/Events.vue'),
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-});
+  routes,
+})
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
+  const authStore = useAuthStore()
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login');
-    return;
+    next('/login')
+    return
   }
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    next('/dashboard');
-    return;
+    next('/dashboard')
+    return
   }
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    next('/dashboard');
-    return;
+    next('/dashboard')
+    return
   }
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

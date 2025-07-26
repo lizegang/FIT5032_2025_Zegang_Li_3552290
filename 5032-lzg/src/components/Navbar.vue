@@ -26,7 +26,11 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/events" class="nav-link" :class="{ active: $route.name === 'Events' }">
+            <router-link
+              to="/events"
+              class="nav-link"
+              :class="{ active: $route.name === 'Events' }"
+            >
               Events
             </router-link>
           </li>
@@ -34,7 +38,10 @@
 
         <ul class="navbar-nav">
           <li class="nav-item" v-if="!isAuthenticated">
-            <router-link to="/login" class="nav-link">Login</router-link>
+            <router-link to="/login" class="nav-link">User Login</router-link>
+          </li>
+          <li class="nav-item" v-if="!isAuthenticated">
+            <router-link to="/admin-login" class="nav-link">Admin Login</router-link>
           </li>
           <li class="nav-item" v-if="!isAuthenticated">
             <router-link to="/register" class="nav-link">Register</router-link>
@@ -62,7 +69,7 @@
                   <i class="fas fa-user me-2"></i>Dashboard
                 </router-link>
               </li>
-              <li><hr class="dropdown-divider"></li>
+              <li><hr class="dropdown-divider" /></li>
               <li>
                 <a href="#" class="dropdown-item" @click="logout">
                   <i class="fas fa-sign-out-alt me-2"></i>Logout
@@ -77,27 +84,29 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useAuthStore } from '@/store/authStore';
+import { computed } from 'vue'
+import { useAuthStore } from '@/store/authStore'
 
 export default {
   setup() {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
 
-    const isAuthenticated = computed(() => authStore.isAuthenticated);
-    const isAdmin = computed(() => authStore.isAdmin);
-    const userName = computed(() => authStore.userName);
+    const isAuthenticated = computed(() => authStore.isAuthenticated)
+    const isAdmin = computed(() => authStore.isAdmin)
+    const userName = computed(() => authStore.userName)
 
     const logout = () => {
-      authStore.logout();
-    };
+      authStore.logout()
+
+      window.location.href = '/'
+    }
 
     return {
       isAuthenticated,
       isAdmin,
       userName,
-      logout
-    };
-  }
-};
+      logout,
+    }
+  },
+}
 </script>
