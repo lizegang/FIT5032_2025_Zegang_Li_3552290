@@ -1,52 +1,79 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/store/authStore'
-import AdminLogin from '@/views/AdminLogin.vue'
+import { useAuthStore } from '../store/authStore'
+
+// 导入视图组件
+import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
+import AdminLogin from '../views/AdminLogin.vue'
+import AdminDashboard from '../views/AdminDashboard.vue'
+import Events from '../views/Events.vue'
+import Event from '../views/Event.vue'
+import MapView from '../views/MapView.vue'
+import DataTablesView from '../views/DataTablesView.vue'
+import BulkEmail from '../views/BulkEmail.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/Home.vue'),
+    component: Home,
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue'),
-    meta: { requiresGuest: true },
+    component: Login,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    meta: { guestOnly: true },
   },
   {
     path: '/admin-login',
     name: 'AdminLogin',
     component: AdminLogin,
-    meta: { requiresGuest: true },
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/Register.vue'),
-    meta: { requiresGuest: true },
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import('@/views/Dashboard.vue'),
-    meta: { requiresAuth: true },
+    meta: { guestOnly: true },
   },
   {
     path: '/admin',
     name: 'AdminDashboard',
-    component: () => import('@/views/AdminDashboard.vue'),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    component: AdminDashboard,
+    meta: { requiresAuth: true, adminOnly: true },
   },
   {
-    path: '/event/:id',
-    name: 'Event',
-    component: () => import('@/views/Event.vue'),
+    path: '/admin/bulk-email',
+    name: 'BulkEmail',
+    component: BulkEmail,
+    meta: { requiresAuth: true, adminOnly: true },
   },
   {
     path: '/events',
     name: 'Events',
-    component: () => import('@/views/Events.vue'),
+    component: Events,
+  },
+  {
+    path: '/events/:id',
+    name: 'Event',
+    component: Event,
+    props: true,
+  },
+  {
+    path: '/map',
+    name: 'MapView',
+    component: MapView,
+  },
+  {
+    path: '/data-tables',
+    name: 'DataTablesView',
+    component: DataTablesView,
+    meta: { requiresAuth: true, adminOnly: true },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ]
 
@@ -55,20 +82,33 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+// 路由守卫
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+
+  // 确保认证状态已初始化
+  if (!authStore.authReady) {
+    await authStore.init()
+  }
+
+  // 检查是否需要认证
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
     return
   }
-  if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    next('/dashboard')
+
+  // 检查是否需要管理员权限
+  if (to.meta.adminOnly && !authStore.isAdmin) {
+    next('/')
     return
   }
-  if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    next('/dashboard')
+
+  // 检查是否是仅限访客的页面
+  if (to.meta.guestOnly && authStore.isAuthenticated) {
+    next('/')
     return
   }
+
   next()
 })
 

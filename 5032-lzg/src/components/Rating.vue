@@ -18,46 +18,46 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
 export default {
   props: {
     score: {
       type: Number,
-      default: 0
+      default: 0,
     },
     readonly: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update'],
   setup(props, { emit }) {
-    const hoverScore = ref(0);
+    const hoverScore = ref(0)
 
     const displayScore = computed(() => {
-      return hoverScore.value > 0 ? hoverScore.value : props.score;
-    });
+      return hoverScore.value > 0 ? hoverScore.value : props.score
+    })
 
     const updateRating = (newScore) => {
       if (!props.readonly) {
-        emit('update', newScore);
+        emit('update', newScore)
       }
-    };
+    }
 
     const hoverRating = (score) => {
       if (!props.readonly) {
-        hoverScore.value = score;
+        hoverScore.value = score
       }
-    };
+    }
 
     return {
       displayScore,
       updateRating,
-      hoverRating
-    };
-  }
-};
+      hoverRating,
+    }
+  },
+}
 </script>
 
 <style scoped>

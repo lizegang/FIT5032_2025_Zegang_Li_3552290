@@ -20,7 +20,7 @@
                     v-model="formData.email"
                     placeholder="Enter your email"
                     required
-                  >
+                  />
                 </div>
 
                 <div class="mb-4">
@@ -33,7 +33,7 @@
                     placeholder="Enter your password"
                     minlength="6"
                     required
-                  >
+                  />
                 </div>
 
                 <div class="d-grid mb-4">
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store/authStore'
 
 export default {
   name: 'AdminLoginPage',
@@ -67,21 +67,21 @@ export default {
     return {
       formData: {
         email: '',
-        password: ''
-      }
-    };
+        password: '',
+      },
+    }
   },
   methods: {
     login() {
-      const authStore = useAuthStore();
+      const authStore = useAuthStore()
       if (authStore.login(this.formData.email, this.formData.password)) {
-        this.$router.push('/admin');
+        this.$router.push('/admin')
       } else {
-        alert('Incorrect email or password');
+        alert('Incorrect email or password')
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped>

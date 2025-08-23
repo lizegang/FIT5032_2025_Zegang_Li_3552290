@@ -1,80 +1,107 @@
 <template>
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-md-3 mb-4">
-        <div class="card shadow-sm">
-          <div class="card-header bg-primary text-white">
-            <h3>Admin Menu</h3>
+  <div class="container mt-5">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    <p class="lead mb-5">Overview of system statistics and management tools.</p>
+
+    <div v-if="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div v-if="error" class="alert alert-danger mb-4">
+      {{ error }}
+    </div>
+
+    <div v-if="!loading && !error">
+      <!-- 统计卡片 -->
+      <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+          <div class="card text-center h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Users</h5>
+              <p class="card-text display-4">{{ userStats.total }}</p>
+            </div>
           </div>
-          <div class="card-body">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a href="#" class="nav-link active">
-                  <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="fas fa-calendar-plus me-2"></i>Create Event
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link"> <i class="fas fa-users me-2"></i>User Management </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link"> <i class="fas fa-chart-line me-2"></i>Analytics </a>
-              </li>
-            </ul>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card text-center h-100">
+            <div class="card-body">
+              <h5 class="card-title">Admins</h5>
+              <p class="card-text display-4">{{ userStats.admins }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card text-center h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Events</h5>
+              <p class="card-text display-4">{{ eventStats.total }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card text-center h-100">
+            <div class="card-body">
+              <h5 class="card-title">Upcoming Events</h5>
+              <p class="card-text display-4">{{ eventStats.upcoming }}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-md-9">
-        <div class="card shadow-sm">
-          <div class="card-header bg-light">
-            <h4>Platform Overview</h4>
+      <!-- 图表行 -->
+      <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <UserStatsChart />
+            </div>
           </div>
-          <div class="card-body">
-            <div class="row g-3">
-              <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                  <div class="card-body">
-                    <h5 class="card-title">Total Users</h5>
-                    <p class="card-text display-4">245</p>
-                    <p class="card-text">12% increase from last month</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="card bg-success text-white">
-                  <div class="card-body">
-                    <h5 class="card-title">Total Events</h5>
-                    <p class="card-text display-4">18</p>
-                    <p class="card-text">5% increase from last month</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="card bg-info text-white">
-                  <div class="card-body">
-                    <h5 class="card-title">Average Rating</h5>
-                    <p class="card-text display-4">{{ overallAverageRating.toFixed(2) }}</p>
-                    <p class="card-text">Out of 5.0</p>
-                  </div>
-                </div>
-              </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <EventStatsChart />
             </div>
+          </div>
+        </div>
+      </div>
 
-            <div class="mt-4">
-              <h5>Recent Event Ratings</h5>
-              <div class="chart-container">
-                <div class="alert alert-warning">
-                  <i class="fas fa-chart-bar me-2"></i>Chart will be displayed here
-                </div>
-              </div>
-            </div>
+      <!-- 最近用户表格 -->
+      <div class="card mb-5">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h2>Recent Users</h2>
+          <ExportButton
+            :data="userStats.recentUsers"
+            filename="recent_users"
+            :headers="['name', 'email', 'role', 'createdAt']"
+          />
+        </div>
+        <div class="card-body">
+          <DataTable :data="userStats.recentUsers" :columns="userColumns" />
+        </div>
+      </div>
+
+      <!-- 管理工具 -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Administration Tools</h2>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            <router-link to="/admin/bulk-email" class="list-group-item list-group-item-action">
+              <i class="fas fa-envelope me-2"></i> Send Bulk Email to Users
+            </router-link>
+            <router-link to="/admin/events" class="list-group-item list-group-item-action">
+              <i class="fas fa-calendar-alt me-2"></i> Manage Events
+            </router-link>
+            <router-link to="/admin/users" class="list-group-item list-group-item-action">
+              <i class="fas fa-users me-2"></i> Manage Users
+            </router-link>
+            <router-link to="/data-tables" class="list-group-item list-group-item-action">
+              <i class="fas fa-table me-2"></i> View Data Tables
+            </router-link>
           </div>
         </div>
       </div>
@@ -83,63 +110,62 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useAuthStore } from '@/store/authStore'
-import { useReviewStore } from '@/store/reviewStore'
+// eslint-disable-next-line no-unused-vars
+import { onMounted, computed } from 'vue'
+import { useAdminStore } from '../store/adminStore'
+import { useAuthStore } from '../store/authStore'
+import { useRouter } from 'vue-router'
+import UserStatsChart from '../components/dashboard/UserStatsChart.vue'
+import EventStatsChart from '../components/dashboard/EventStatsChart.vue'
+import DataTable from '../components/common/DataTable.vue'
+import ExportButton from '../components/common/ExportButton.vue'
 
 export default {
+  name: 'AdminDashboard',
+  components: {
+    UserStatsChart,
+    EventStatsChart,
+    DataTable,
+    ExportButton,
+  },
   setup() {
+    const adminStore = useAdminStore()
     const authStore = useAuthStore()
-    const reviewStore = useReviewStore()
+    const router = useRouter()
 
-    const user = computed(() => authStore.user || {})
-
-    const allEvents = [
+    // 用户表格列定义
+    const userColumns = [
+      { label: 'Name', field: 'name' },
+      { label: 'Email', field: 'email' },
+      { label: 'Role', field: 'role' },
       {
-        id: 'event-1',
-        title: 'Health Lecture: Preventing Cardiovascular Diseases',
-        date: '2023-06-15',
-        location: 'Community Activity Center',
-        description:
-          'This lecture will be given by Professor Zhang, a cardiovascular expert. The content includes prevention of cardiovascular diseases, early symptom recognition, and healthy lifestyle advice. Suitable for people of all ages.',
-        imageUrl: 'https://picsum.photos/seed/health1/400/200',
-      },
-      {
-        id: 'event-2',
-        title: 'Community Free Medical Check-up',
-        date: '2023-06-20',
-        location: 'Community Square',
-        description:
-          'A free medical check-up organized by the Municipal Hospital, providing free blood pressure and blood sugar tests, as well as basic examinations in internal medicine, surgery, ophthalmology, etc. Welcome residents to participate.',
-        imageUrl: 'https://picsum.photos/seed/health2/400/200',
-      },
-      {
-        id: 'event-3',
-        title: 'Adolescent Mental Health Lecture',
-        date: '2023-07-05',
-        location: 'City Youth Activity Center',
-        description:
-          'A special lecture on common psychological problems among adolescents (such as academic stress, social anxiety), presented by professional psychological counselors.',
-        imageUrl: 'https://picsum.photos/seed/health3/400/200',
+        label: 'Registration Date',
+        field: 'createdAt',
+        render: (row) => {
+          return row.createdAt
+            ? new Date(row.createdAt?.toDate?.() || row.createdAt).toLocaleDateString()
+            : 'N/A'
+        },
       },
     ]
 
-    const overallAverageRating = computed(() => {
-      let totalScore = 0
-      let totalCount = 0
-
-      allEvents.forEach((event) => {
-        const { count, average } = reviewStore.getEventRating(event.id)
-        totalScore += average * count
-        totalCount += count
-      })
-
-      return totalCount > 0 ? totalScore / totalCount : 0
+    onMounted(async () => {
+      // 检查用户是否已登录且是管理员
+      if (!authStore.isAuthenticated) {
+        router.push('/login')
+      } else if (!authStore.isAdmin) {
+        router.push('/')
+      } else {
+        await adminStore.fetchAllStats()
+      }
     })
 
     return {
-      user,
-      overallAverageRating,
+      userStats: adminStore.userStats,
+      eventStats: adminStore.eventStats,
+      loading: adminStore.loading,
+      error: adminStore.error,
+      userColumns,
     }
   },
 }
