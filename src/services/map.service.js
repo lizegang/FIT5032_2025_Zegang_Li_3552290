@@ -148,14 +148,12 @@ export const addMarkers = (locations, mapInstance = map) => {
   const markers = []
 
   locations.forEach((location) => {
-    // 腾讯地图标记位置为latLng属性
     const marker = new qq.maps.Marker({
-      position: location.latLng, // 替换谷歌的geometry.location
+      position: location.latLng,
       map: mapInstance,
       title: location.name,
     })
 
-    // 腾讯地图信息窗口内容（使用腾讯返回的address字段）
     const infowindow = new qq.maps.InfoWindow({
       content: `
         <strong>${location.name}</strong><br>
@@ -164,7 +162,6 @@ export const addMarkers = (locations, mapInstance = map) => {
       `,
     })
 
-    // 腾讯地图事件监听
     qq.maps.event.addListener(marker, 'click', () => {
       infowindow.open(mapInstance, marker)
     })
@@ -174,3 +171,6 @@ export const addMarkers = (locations, mapInstance = map) => {
 
   return markers
 }
+
+// 如果需要使用 `process.env`，确保在 Vite 中定义
+const apiKey = process.env.MAP_API_KEY || '默认API密钥'

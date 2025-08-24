@@ -1,20 +1,30 @@
+// eslint-disable-next-line no-unused-vars
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { functions } from '@/firebase/config'
 
 // 使用云函数发送单封邮件
-export const sendEmail = async (to, subject, content, attachment = null) => {
+export const sendEmail = async (emailData) => {
   try {
-    const sendEmailFunction = httpsCallable(functions, 'sendEmail')
-    const result = await sendEmailFunction({
-      to,
-      subject,
-      content,
-      attachment,
+    const response = await fetch('https://<your-alibaba-cloud-fc-endpoint>/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(emailData),
     })
-    return { success: true, data: result.data }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const result = await response.json()
+    if (result.success) {
+      console.log('Email sent successfully:', result.messageId)
+    } else {
+      console.error('Error sending email:', result.error)
+    }
   } catch (error) {
     console.error('Error sending email:', error)
-    return { success: false, error: error.message }
   }
 }
 

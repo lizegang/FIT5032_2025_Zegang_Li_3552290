@@ -1,11 +1,10 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
       <router-link to="/" class="navbar-brand">
         <i class="fas fa-heartbeat me-2"></i>Health Charity Platform
       </router-link>
-
       <button
         class="navbar-toggler"
         type="button"
@@ -17,7 +16,6 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
@@ -67,14 +65,14 @@
             <a
               class="nav-link dropdown-toggle"
               href="#"
-              id="navbarDropdown"
+              id="userDropdown"
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               {{ userName }}
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <ul class="dropdown-menu" aria-labelledby="userDropdown">
               <li v-if="isAdmin">
                 <router-link to="/admin" class="dropdown-item">
                   <i class="fas fa-cog me-2"></i>Admin Panel
@@ -140,3 +138,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.navbar {
+  margin-bottom: 20px;
+}
+</style>

@@ -8,7 +8,6 @@ admin.initializeApp()
 // 配置SendGrid
 sgMail.setApiKey(functions.config().sendgrid.api_key)
 
-// 发送单封邮件的云函数
 exports.sendEmail = functions.https.onCall(async (data, context) => {
   // 验证用户是否已认证
   if (!context.auth) {
@@ -42,7 +41,6 @@ exports.sendEmail = functions.https.onCall(async (data, context) => {
   }
 })
 
-// 发送批量邮件的云函数
 exports.sendBulkEmail = functions.https.onCall(async (data, context) => {
   // 验证用户是否已认证且是管理员
   if (!context.auth) {
@@ -96,7 +94,6 @@ exports.sendBulkEmail = functions.https.onCall(async (data, context) => {
   }
 })
 
-// 获取用户列表的API端点
 exports.getUsers = functions.https.onRequest(async (req, res) => {
   try {
     const usersSnapshot = await admin.firestore().collection('users').get()
@@ -116,9 +113,9 @@ exports.getUsers = functions.https.onRequest(async (req, res) => {
   }
 })
 
-// 获取事件列表的API端点
 exports.getEvents = functions.https.onRequest(async (req, res) => {
   try {
+    const { page = 1, pageSize = 10 } = req.query // 获取分页参数
     const eventsSnapshot = await admin.firestore().collection('events').get()
     const events = []
 
@@ -129,7 +126,15 @@ exports.getEvents = functions.https.onRequest(async (req, res) => {
       })
     })
 
-    res.status(200).json(events)
+    // 实现分页
+    const startIndex = (page - 1) * pageSize
+    const paginatedEvents = events.slice(startIndex, startIndex + parseInt(pageSize))
+
+    res.status(200).json({
+      success: true,
+      data: paginatedEvents,
+      total: events.length,
+    })
   } catch (error) {
     console.error('Error fetching events:', error)
     res.status(500).json({ error: 'Failed to fetch events' })

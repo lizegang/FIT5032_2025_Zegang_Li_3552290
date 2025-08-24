@@ -10,13 +10,11 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, 'src'), // 确保别名指向 src 目录
     },
   },
-  // 关键修复：移除 require，直接映射到全局引入的 jQuery
   define: {
-    'window.jQuery': 'window.$',
-    'window.$': 'window.$', // 不再使用 require，直接指向全局 $
+    'process.env': {}, // 显式定义 process.env，避免未定义错误
   },
   optimizeDeps: {
     include: ['jquery', 'datatables.net', 'datatables.net-bs5'],
