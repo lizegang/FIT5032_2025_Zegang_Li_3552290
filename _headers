@@ -1,0 +1,4 @@
+# _headers 文件（Cloudflare Pages 配置）
+/functions/*
+  X-Robots-Tag: noindex
+  Cache-Control: no-store
