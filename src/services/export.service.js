@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver'
-import jsPDF from 'jspdf'
+import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 
 // 导出为CSV
@@ -43,26 +43,26 @@ export const exportToPDF = (data, filename, headers = null) => {
       throw new Error('No data to export')
     }
 
-    // 创建PDF文档
     const doc = new jsPDF()
+    const headers = Object.keys(data[0]) // 获取数据的列名
+    const rows = data.map((row) => Object.values(row)) // 获取数据的行内容
 
-    // 设置标题
-    doc.setFontSize(16)
-    doc.text(filename, 14, 20)
-
-    // 使用数据中的键作为默认标题
-    const dataHeaders = headers || Object.keys(data[0])
-
-    // 准备表格数据
-    const tableData = data.map((item) => {
-      return dataHeaders.map((header) => {
-        return item[header] !== undefined ? item[header].toString() : ''
-      })
+    doc.text('导出数据', 10, 10) // 添加标题
+    doc.autoTable({
+      head: [headers],
+      body: rows,
+      startY: 20,
     })
 
-    // 添加表格
-    doc.autoTable({
-      head: [dataHeaders],
+    // 保存PDF
+    doc.save(`${filename}.pdf`)
+
+    return true
+  } catch (error) {
+    console.error('Error exporting to PDF:', error)
+    return false
+  }
+}
       body: tableData,
       startY: 30,
       theme: 'striped',

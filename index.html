@@ -2,26 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Health Charity Platform - A platform to find health facilities and navigate routes using Tencent Maps."
+    />
+    <meta name="keywords" content="Health, Charity, Tencent Maps, Navigation, Facilities" />
+    <meta name="author" content="Your Name or Organization" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="/favicon.ico" />
+
     <!-- 引入 Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <!-- 引入腾讯地图 JavaScript API（已填入你的密钥） -->
-    <script src="https://map.qq.com/api/js?v=2.exp&key=VVTBZ-CRL6M-X5H65-6N6WU-HMXK2-XNBMH&libraries=places"></script>
-    <!-- 引入 Font Awesome 图标库（页面中使用了fas/fab图标） -->
+
+    <!-- 引入 Font Awesome 图标库 -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <title>Health Charity Platform</title>
+
+    <title>Health Charity Platform - Find Health Facilities</title>
   </head>
   <body>
+    <!-- Vue.js 应用挂载点 -->
     <div id="app"></div>
+
     <!-- 引入 Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 引入腾讯地图 JavaScript API -->
+    <script src="https://map.qq.com/api/js?v=2.exp&key=VVTBZ-CRL6M-X5H65-6N6WU-HMXK2-XNBMH&libraries=places"></script>
+
+    <!-- 引入主 JavaScript 文件 -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
