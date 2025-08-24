@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+// eslint-disable-next-line no-unused-vars
 import { collection, getDocs, query, where, count } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 

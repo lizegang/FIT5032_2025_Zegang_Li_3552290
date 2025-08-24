@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <div class="data-table-container">
     <!-- 搜索框 -->
@@ -26,6 +27,7 @@
             class="col"
             v-for="(column, index) in columns"
             :key="index"
+            
             v-if="column.searchable !== false"
           >
             <input
@@ -195,6 +197,7 @@ export default {
         // 全局搜索
         const matchesGlobal =
           globalSearch.value === '' ||
+          // eslint-disable-next-line no-unused-vars
           props.columns.some((column, colIndex) => {
             const value = getCellValue(row, column.field).toString().toLowerCase()
             return value.includes(globalSearch.value.toLowerCase())

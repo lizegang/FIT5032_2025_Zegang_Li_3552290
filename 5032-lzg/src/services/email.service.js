@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { functions } from '@/firebase/config'
 

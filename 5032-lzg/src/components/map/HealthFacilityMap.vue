@@ -1,4 +1,5 @@
-/* global qq */
+<!-- eslint-disable no-undef -->
+
 <template>
   <div class="health-map-container">
     <div class="row">
@@ -125,6 +126,7 @@ export default {
               mapInstance.setCenter(userLocation)
 
               // 添加用户位置标记
+              // eslint-disable-next-line no-undef
               new qq.maps.Marker({
                 position: userLocation,
                 map: mapInstance,

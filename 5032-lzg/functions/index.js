@@ -1,6 +1,6 @@
-const functions = require('firebase-functions')
-const admin = require('firebase-admin')
-const sgMail = require('@sendgrid/mail')
+const functions = import('firebase-functions')
+const admin = import('firebase-admin')
+const sgMail = import('@sendgrid/mail')
 
 // 初始化Firebase Admin
 admin.initializeApp()
@@ -8,8 +8,7 @@ admin.initializeApp()
 // 配置SendGrid
 sgMail.setApiKey(functions.config().sendgrid.api_key)
 
-// 发送单封邮件的云函数
-exports.sendEmail = functions.https.onCall(async (data, context) => {
+export const sendEmail = functions.https.onCall(async (data, context) => {
   // 验证用户是否已认证
   if (!context.auth) {
     throw new functions.https.HttpsError(
@@ -42,8 +41,7 @@ exports.sendEmail = functions.https.onCall(async (data, context) => {
   }
 })
 
-// 发送批量邮件的云函数
-exports.sendBulkEmail = functions.https.onCall(async (data, context) => {
+export const sendBulkEmail = functions.https.onCall(async (data, context) => {
   // 验证用户是否已认证且是管理员
   if (!context.auth) {
     throw new functions.https.HttpsError(
@@ -96,8 +94,7 @@ exports.sendBulkEmail = functions.https.onCall(async (data, context) => {
   }
 })
 
-// 获取用户列表的API端点
-exports.getUsers = functions.https.onRequest(async (req, res) => {
+export const getUsers = functions.https.onRequest(async (req, res) => {
   try {
     const usersSnapshot = await admin.firestore().collection('users').get()
     const users = []
@@ -116,8 +113,7 @@ exports.getUsers = functions.https.onRequest(async (req, res) => {
   }
 })
 
-// 获取事件列表的API端点
-exports.getEvents = functions.https.onRequest(async (req, res) => {
+export const getEvents = functions.https.onRequest(async (req, res) => {
   try {
     const eventsSnapshot = await admin.firestore().collection('events').get()
     const events = []

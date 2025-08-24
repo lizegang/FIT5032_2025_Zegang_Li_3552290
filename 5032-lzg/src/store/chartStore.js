@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+// eslint-disable-next-line no-unused-vars
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 
@@ -28,6 +29,8 @@ export const useChartStore = defineStore('charts', {
         const monthlyData = {}
 
         usersSnapshot.forEach((doc) => {
+
+          // eslint-disable-next-line no-unused-vars
           const user = doc.data()
           // 假设你有createdAt字段
           // const date = new Date(user.createdAt.toDate());

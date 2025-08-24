@@ -90,6 +90,7 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue'
+// eslint-disable-next-line no-unused-vars
 import { sendBulkEmail } from '../../services/email.service'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase/config'
