@@ -12,7 +12,7 @@ import Event from '../views/Event.vue'
 import MapView from '../views/MapView.vue'
 import DataTablesView from '../views/DataTablesView.vue'
 import BulkEmail from '../views/BulkEmail.vue'
-
+import FeedbackForm from '@/views/FeedbackForm.vue'
 import EventsPage from '@/views/EventsPage.vue'
 import AdminUsersPage from '@/views/AdminUsersPage.vue'
 const routes = [
@@ -87,6 +87,11 @@ const routes = [
     name: 'AdminUsers',
     component: AdminUsersPage,
     meta: { requiresAuth: true }, // 需登录（可结合之前的路由守卫）
+  },
+  {
+    path: '/feedback',
+    name: 'Feedback',
+    component: FeedbackForm,
   },
 ]
 

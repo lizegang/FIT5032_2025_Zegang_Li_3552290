@@ -46,6 +46,9 @@
           <li class="nav-item" v-if="!isAuthenticated">
             <router-link to="/register" class="nav-link">Register</router-link>
           </li>
+          <li class="nav-item" v-if="!isAuthenticated">
+            <router-link to="/feedback" class="nav-link"> Submit Feedback</router-link>
+          </li>
 
           <li class="nav-item dropdown" v-else>
             <a
