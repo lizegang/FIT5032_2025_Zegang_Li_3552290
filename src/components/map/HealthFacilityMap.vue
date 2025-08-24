@@ -5,17 +5,17 @@
       <div class="col-md-4 mb-4">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title">Find Health Facilities</h5>
+            <h5 class="card-title">查找医疗设施</h5>
 
             <div class="mb-3">
-              <label for="searchQuery" class="form-label">Search:</label>
+              <label for="searchQuery" class="form-label">搜索:</label>
               <input
                 type="text"
                 class="form-control"
                 id="searchQuery"
                 v-model="searchQuery"
-                placeholder="e.g. hospital, clinic"
-                aria-label="Search health facilities"
+                placeholder="例如: 医院, 诊所"
+                aria-label="搜索医疗设施"
               />
             </div>
 
@@ -24,7 +24,7 @@
               @click="searchFacilities"
               :disabled="loading"
             >
-              {{ loading ? 'Searching...' : 'Search' }}
+              {{ loading ? '搜索中...' : '搜索' }}
             </button>
 
             <div v-if="error" class="alert alert-danger">
@@ -33,33 +33,33 @@
 
             <hr />
 
-            <h5 class="card-title">Get Directions</h5>
+            <h5 class="card-title">获取路线</h5>
 
             <div class="mb-3">
-              <label for="origin" class="form-label">From:</label>
+              <label for="origin" class="form-label">起点:</label>
               <input
                 type="text"
                 class="form-control"
                 id="origin"
                 v-model="origin"
-                placeholder="Your location"
-                aria-label="Origin location"
+                placeholder="你的位置（经纬度，例如: -37.8136, 144.9631）"
+                aria-label="起点位置"
               />
             </div>
 
             <div class="mb-3">
-              <label for="destination" class="form-label">To:</label>
+              <label for="destination" class="form-label">终点:</label>
               <select
                 class="form-select"
                 id="destination"
                 v-model="destination"
-                aria-label="Select destination"
+                aria-label="选择目的地"
               >
-                <option value="">Select a facility</option>
+                <option value="">选择医疗设施</option>
                 <option
                   v-for="(facility, index) in facilities"
                   :key="index"
-                  :value="facility.formatted_address"
+                  :value="`${facility.latLng.lat},${facility.latLng.lng}`"
                 >
                   {{ facility.name }}
                 </option>
@@ -71,14 +71,14 @@
               @click="getDirections"
               :disabled="!origin || !destination"
             >
-              Get Directions
+              获取路线
             </button>
           </div>
         </div>
       </div>
 
       <div class="col-md-8">
-        <div id="map" class="map" aria-label="Health facilities map"></div>
+        <div id="map" class="map" aria-label="医疗设施地图"></div>
       </div>
     </div>
   </div>
@@ -96,7 +96,6 @@ import {
 export default {
   name: 'HealthFacilityMap',
   setup() {
-    const mapElement = ref(null)
     const searchQuery = ref('')
     const facilities = ref([])
     const loading = ref(false)
@@ -109,41 +108,41 @@ export default {
     // 初始化地图
     const initializeMap = async () => {
       try {
-        mapElement.value = document.getElementById('map')
-        mapInstance = await initMap(mapElement.value)
+        const mapElement = document.getElementById('map')
+        mapInstance = await initMap(mapElement)
 
         // 尝试获取用户位置
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              const userLocation = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-              }
+              const userLocation = new qq.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude,
+              )
 
               // 移动地图到用户位置
               mapInstance.setCenter(userLocation)
 
               // 添加用户位置标记
               new qq.maps.Marker({
-                position: userLocation,
+                position: new qq.maps.LatLng(userLocation.lat, userLocation.lng), // 显式创建腾讯坐标对象
                 map: mapInstance,
                 title: 'Your Location',
                 icon: {
                   url: 'data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%230d6efd"%3e%3ccircle cx="12" cy="12" r="10"/%3e%3ccircle cx="12" cy="12" r="5" fill="white"/%3e%3c/svg%3e',
-                  scaledSize: new qq.maps.LatLng(20, 20),
+                  scaledSize: new qq.maps.Size(20, 20), // 修正：腾讯地图使用Size而非LatLng
                 },
               })
 
               // 设置起点为用户位置
-              origin.value = `${userLocation.lat}, ${userLocation.lng}`
+              origin.value = `${userLocation.lat},${userLocation.lng}`
 
               // 自动搜索附近的医疗设施
-              searchQuery.value = 'hospital, clinic'
+              searchQuery.value = '医院, 诊所'
               searchFacilities()
             },
             (err) => {
-              console.warn(`Error getting location: ${err.message}`)
+              console.warn(`获取位置失败: ${err.message}`)
               // 位置获取失败时仍进行默认搜索
               searchFacilities()
             },
@@ -153,7 +152,7 @@ export default {
           searchFacilities()
         }
       } catch (err) {
-        error.value = `Failed to load map: ${err.message}`
+        error.value = `地图加载失败: ${err.message}`
         console.error(err)
       }
     }
@@ -180,12 +179,12 @@ export default {
         if (results.length > 0) {
           const bounds = new qq.maps.LatLngBounds()
           results.forEach((place) => {
-            bounds.extend(place.geometry.location)
+            bounds.extend(place.latLng) // 腾讯地图的位置属性是latLng
           })
           mapInstance.fitBounds(bounds)
         }
       } catch (err) {
-        error.value = `Search failed: ${err.message}`
+        error.value = `搜索失败: ${err.message}`
         console.error(err)
       } finally {
         loading.value = false
@@ -199,7 +198,7 @@ export default {
       try {
         await calculateRoute(origin.value, destination.value)
       } catch (err) {
-        error.value = `Failed to get directions: ${err.message}`
+        error.value = `路线获取失败: ${err.message}`
         console.error(err)
       }
     }

@@ -15,6 +15,7 @@ import BulkEmail from '../views/BulkEmail.vue'
 import FeedbackForm from '@/views/FeedbackForm.vue'
 import EventsPage from '@/views/EventsPage.vue'
 import AdminUsersPage from '@/views/AdminUsersPage.vue'
+
 const routes = [
   {
     path: '/',
@@ -54,7 +55,12 @@ const routes = [
   {
     path: '/events',
     name: 'Events',
-    component: Events,
+    component: Events, // 保留原有Events组件
+  },
+  {
+    path: '/events-page', // 修复重复路由，将EventsPage改为独立路径
+    name: 'EventsPage',
+    component: EventsPage,
   },
   {
     path: '/events/:id',
@@ -74,24 +80,19 @@ const routes = [
     meta: { requiresAuth: true, adminOnly: true },
   },
   {
-    path: '/:pathMatch(.*)*',
-    redirect: '/',
-  },
-  {
-    path: '/events',
-    name: 'Events',
-    component: EventsPage,
-  },
-  {
     path: '/admin/users',
     name: 'AdminUsers',
     component: AdminUsersPage,
-    meta: { requiresAuth: true }, // 需登录（可结合之前的路由守卫）
+    meta: { requiresAuth: true, adminOnly: true }, // 补充管理员权限
   },
   {
     path: '/feedback',
     name: 'Feedback',
     component: FeedbackForm,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ]
 
@@ -100,23 +101,20 @@ const router = createRouter({
   routes,
 })
 
-// 路由守卫
+// 路由守卫（保持原有逻辑）
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
-  // 检查是否需要认证
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
     return
   }
 
-  // 检查是否需要管理员权限
   if (to.meta.adminOnly && !authStore.isAdmin) {
     next('/')
     return
   }
 
-  // 检查是否是仅限访客的页面
   if (to.meta.guestOnly && authStore.isAuthenticated) {
     next('/')
     return

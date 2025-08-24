@@ -6,6 +6,7 @@
       placeholder="Please enter your feedback..."
       rows="4"
       class="form-control mb-3"
+      required
     ></textarea>
 
     <input
@@ -28,6 +29,8 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { sendEmail } from '../services/email.service' // 使用云函数服务
+
 export default {
   setup() {
     const feedbackContent = ref('')
@@ -36,33 +39,43 @@ export default {
     const message = ref('')
     const messageType = ref('')
     const router = useRouter()
-    // 在 FeedbackForm.vue 的 submitFeedback 函数中，成功后添加跳转
+
     const submitFeedback = async () => {
+      if (!feedbackContent.value.trim()) {
+        message.value = 'Please enter your feedback'
+        messageType.value = 'alert-danger'
+        return
+      }
+
+      isSubmitting.value = true
+      message.value = ''
+
       try {
-        const response = await fetch('https://bookcoufunction-oluquikswb.cn-hongkong.fcapp.run', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: feedbackContent.value, email: userEmail.value }),
-        })
-        const result = await response.json()
+        // 使用云函数发送反馈到管理员邮箱
+        const adminEmail = 'admin@healthplatform.com'
+        const result = await sendEmail(
+          adminEmail,
+          'New User Feedback',
+          `<p>From: ${userEmail.value || 'Anonymous'}</p><p>${feedbackContent.value}</p>`,
+        )
 
         if (result.success) {
-          message.value = result.message
+          message.value = 'Feedback submitted successfully! Thank you.'
           messageType.value = 'alert-success'
           feedbackContent.value = ''
           userEmail.value = ''
 
-          // 新增：3秒后自动跳转到首页
-          setTimeout(() => {
-            router.push('/') // 跳转到首页
-          }, 3000)
+          // 3秒后跳回首页
+          setTimeout(() => router.push('/'), 3000)
         } else {
-          message.value = result.message
+          message.value = 'Failed to submit feedback: ' + result.error
           messageType.value = 'alert-danger'
         }
-        // eslint-disable-next-line no-unused-vars
       } catch (error) {
-        // 错误处理
+        message.value = 'Error: ' + error.message
+        messageType.value = 'alert-danger'
+      } finally {
+        isSubmitting.value = false
       }
     }
 

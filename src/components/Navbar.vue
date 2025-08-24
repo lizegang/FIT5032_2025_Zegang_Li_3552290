@@ -34,6 +34,22 @@
               Events
             </router-link>
           </li>
+          <!-- 新增：地图功能入口 -->
+          <li class="nav-item">
+            <router-link to="/map" class="nav-link" :class="{ active: $route.name === 'MapView' }">
+              <i class="fas fa-map-marker-alt me-1"></i>Health Facilities Map
+            </router-link>
+          </li>
+          <!-- 新增：反馈入口（所有用户可见） -->
+          <li class="nav-item">
+            <router-link
+              to="/feedback"
+              class="nav-link"
+              :class="{ active: $route.name === 'Feedback' }"
+            >
+              <i class="fas fa-comment me-1"></i>Feedback
+            </router-link>
+          </li>
         </ul>
 
         <ul class="navbar-nav">
@@ -45,9 +61,6 @@
           </li>
           <li class="nav-item" v-if="!isAuthenticated">
             <router-link to="/register" class="nav-link">Register</router-link>
-          </li>
-          <li class="nav-item" v-if="!isAuthenticated">
-            <router-link to="/feedback" class="nav-link"> Submit Feedback</router-link>
           </li>
 
           <li class="nav-item dropdown" v-else>
@@ -65,6 +78,21 @@
               <li v-if="isAdmin">
                 <router-link to="/admin" class="dropdown-item">
                   <i class="fas fa-cog me-2"></i>Admin Panel
+                </router-link>
+              </li>
+              <li v-if="isAdmin">
+                <router-link to="/admin/users" class="dropdown-item">
+                  <i class="fas fa-users me-2"></i>Manage Users
+                </router-link>
+              </li>
+              <li v-if="isAdmin">
+                <router-link to="/admin/bulk-email" class="dropdown-item">
+                  <i class="fas fa-envelope me-2"></i>Bulk Email
+                </router-link>
+              </li>
+              <li v-if="isAdmin">
+                <router-link to="/data-tables" class="dropdown-item">
+                  <i class="fas fa-table me-2"></i>Data Tables
                 </router-link>
               </li>
               <li>
@@ -100,7 +128,6 @@ export default {
 
     const logout = () => {
       authStore.logout()
-
       window.location.href = '/'
     }
 

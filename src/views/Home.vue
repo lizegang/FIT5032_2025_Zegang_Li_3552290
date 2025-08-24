@@ -9,9 +9,14 @@
         <router-link to="/events" class="btn btn-outline-secondary btn-lg">
           Browse Events
         </router-link>
+        <!-- 新增：地图快捷入口 -->
+        <router-link to="/map" class="btn btn-success btn-lg">
+          <i class="fas fa-map-marker-alt me-1"></i>Find Health Facilities
+        </router-link>
       </div>
     </div>
 
+    <!-- 原有三个功能卡片 -->
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card h-100 shadow-sm">
@@ -24,6 +29,9 @@
               Participate in various health lectures and free medical check-ups to get professional
               medical advice.
             </p>
+            <router-link to="/events" class="btn btn-outline-primary mt-2">
+              View Activities
+            </router-link>
           </div>
         </div>
       </div>
@@ -52,11 +60,15 @@
             <p class="card-text">
               Exchange health experiences and share life stories with like-minded friends.
             </p>
+            <router-link to="/feedback" class="btn btn-outline-primary mt-2">
+              Share Feedback
+            </router-link>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 原有近期活动区域 -->
     <div class="mt-6">
       <h2 class="text-center mb-4">Recent Events</h2>
       <div class="row g-4">
@@ -88,7 +100,7 @@
                 </div>
               </div>
 
-              <router-link :to="`/event/${event.id}`" class="btn btn-outline-primary mt-3">
+              <router-link :to="`/events/${event.id}`" class="btn btn-outline-primary mt-3">
                 View Details
               </router-link>
             </div>
