@@ -1,4 +1,9 @@
 <template>
+  <div class="container py-5">
+    <h3 class="mb-4">Upcoming Health Charity Events</h3>
+    <!-- 引入活动列表表格 -->
+    <EventsTable />
+  </div>
   <div class="container mt-5">
     <h1 class="mb-4">Admin Dashboard</h1>
     <p class="lead mb-5">Overview of system statistics and management tools.</p>
@@ -119,7 +124,7 @@ import UserStatsChart from '../components/dashboard/UserStatsChart.vue'
 import EventStatsChart from '../components/dashboard/EventStatsChart.vue'
 import DataTable from '../components/common/DataTable.vue'
 import ExportButton from '../components/common/ExportButton.vue'
-
+import EventsTable from '@/components/tables/EventsTable.vue'
 export default {
   name: 'AdminDashboard',
   components: {
@@ -127,6 +132,7 @@ export default {
     EventStatsChart,
     DataTable,
     ExportButton,
+    EventsTable,
   },
   setup() {
     const adminStore = useAdminStore()

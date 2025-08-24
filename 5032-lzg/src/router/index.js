@@ -13,6 +13,8 @@ import MapView from '../views/MapView.vue'
 import DataTablesView from '../views/DataTablesView.vue'
 import BulkEmail from '../views/BulkEmail.vue'
 
+import EventsPage from '@/views/EventsPage.vue'
+import AdminUsersPage from '@/views/AdminUsersPage.vue'
 const routes = [
   {
     path: '/',
@@ -75,6 +77,17 @@ const routes = [
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },
+  {
+    path: '/events',
+    name: 'Events',
+    component: EventsPage,
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: AdminUsersPage,
+    meta: { requiresAuth: true }, // 需登录（可结合之前的路由守卫）
+  },
 ]
 
 const router = createRouter({
@@ -85,11 +98,6 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-
-  // 确保认证状态已初始化
-  if (!authStore.authReady) {
-    await authStore.init()
-  }
 
   // 检查是否需要认证
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

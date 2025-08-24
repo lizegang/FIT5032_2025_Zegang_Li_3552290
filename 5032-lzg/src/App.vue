@@ -23,8 +23,6 @@
 <script>
 import Navbar from './components/Navbar.vue'
 import AccessibilityControls from './components/common/AccessibilityControls.vue'
-import { onMounted } from 'vue'
-import { useAuthStore } from './store/authStore'
 
 export default {
   name: 'App',
@@ -32,14 +30,7 @@ export default {
     Navbar,
     AccessibilityControls,
   },
-  setup() {
-    const authStore = useAuthStore()
-
-    onMounted(async () => {
-      // 初始化认证状态
-      await authStore.init()
-    })
-  },
+  setup() {},
 }
 </script>
 

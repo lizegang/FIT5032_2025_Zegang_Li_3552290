@@ -1,6 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="container py-5">
+    <h3 class="mb-4">Upcoming Health Charity Events</h3>
+    <!-- 引入活动列表表格 -->
+    <EventsTable />
+  </div>
+  <div class="container py-5">
     <div class="text-center mb-6">
       <h1 class="display-5 fw-bold">Health Charity Events</h1>
       <p class="text-muted">
@@ -85,12 +90,14 @@
 </template>
 
 <script>
+import EventsTable from '@/components/tables/EventsTable.vue'
+
 import { ref, computed } from 'vue'
 import { useReviewStore } from '@/store/reviewStore'
 import Rating from '@/components/Rating.vue'
 
 export default {
-  components: { Rating },
+  components: { EventsTable, Rating },
   setup() {
     const allEvents = ref([
       {

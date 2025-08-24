@@ -1,3 +1,4 @@
+/* global qq */
 <template>
   <div class="health-map-container">
     <div class="row">
@@ -124,13 +125,13 @@ export default {
               mapInstance.setCenter(userLocation)
 
               // 添加用户位置标记
-              new google.maps.Marker({
+              new qq.maps.Marker({
                 position: userLocation,
                 map: mapInstance,
                 title: 'Your Location',
                 icon: {
                   url: 'data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%230d6efd"%3e%3ccircle cx="12" cy="12" r="10"/%3e%3ccircle cx="12" cy="12" r="5" fill="white"/%3e%3c/svg%3e',
-                  scaledSize: new google.maps.Size(20, 20),
+                  scaledSize: new qq.maps.LatLng(20, 20),
                 },
               })
 
@@ -177,7 +178,7 @@ export default {
 
         // 如果有结果，调整地图视野以显示所有标记
         if (results.length > 0) {
-          const bounds = new google.maps.LatLngBounds()
+          const bounds = new qq.maps.LatLngBounds()
           results.forEach((place) => {
             bounds.extend(place.geometry.location)
           })

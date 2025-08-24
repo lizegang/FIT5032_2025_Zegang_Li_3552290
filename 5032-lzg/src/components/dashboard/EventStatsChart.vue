@@ -16,7 +16,6 @@
 <script>
 import { ref, onMounted, watch } from 'vue'
 import { useChartStore } from '../../store/chartStore'
-import Chart from 'chart.js/auto'
 
 export default {
   name: 'EventStatsChart',

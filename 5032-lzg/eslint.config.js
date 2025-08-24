@@ -16,6 +16,7 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
+        qq: 'readonly', // 已添加腾讯地图全局变量声明
       },
     },
   },

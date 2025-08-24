@@ -53,7 +53,7 @@ export const searchHealthFacilities = async (query, location = null) => {
     }
 
     service.textSearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
+      if (status === qq.maps.places.PlacesServiceStatus.OK) {
         resolve(results)
       } else {
         reject(new Error(`Search failed: ${status}`))
@@ -72,11 +72,11 @@ export const calculateRoute = async (origin, destination) => {
     const request = {
       origin,
       destination,
-      travelMode: google.maps.TravelMode.DRIVING,
+      travelMode: qq.maps.TravelMode.DRIVING,
     }
 
     directionsService.route(request, (result, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
+      if (status === qq.maps.DirectionsStatus.OK) {
         directionsRenderer.setDirections(result)
         resolve(result)
       } else {
@@ -95,14 +95,14 @@ export const addMarkers = (locations, mapInstance = map) => {
   const markers = []
 
   locations.forEach((location) => {
-    const marker = new google.maps.Marker({
+    const marker = new qq.maps.Marker({
       position: location.geometry.location,
       map: mapInstance,
       title: location.name,
     })
 
     // 添加信息窗口
-    const infowindow = new google.maps.InfoWindow({
+    const infowindow = new qq.maps.InfoWindow({
       content: `
         <strong>${location.name}</strong><br>
         ${location.formatted_address}<br>
